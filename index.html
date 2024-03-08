@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="base64.js"></script>
+</head>
+
+<body>
+    <div class="drag-area" role="application" aria-hidden="true">
+        <h1>Convert to base64</h1>
+        <input accept="image/*" multiple type="file" onchange="handleFileInput(this)" id="fileInput"
+            style="font-size: large;">
+        <table id="customers">
+            <thead>
+                <tr>
+                    <th>name</th>
+                    <th>size</th>
+                    <th>type</th>
+                    <th>base64</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
+    </div>
+    <div class="drag-area" role="application" aria-hidden="true">
+        <h1>Convert to file</h1>
+        <label>Enter base 64 data</label>
+        <textarea id="textInput" style="width: 80%; padding: 20px;"></textarea>
+        <button
+            onclick="document.getElementById('imgView').src = globalThis.URL.createObjectURL(base64ToFile(document.getElementById('textInput').value))">Get
+            file</button>
+        <img src="" id="imgView" />
+
+    </div>
+    <div class="drag-area" role="application" aria-hidden="true" id="form" method="post">
+        <h1>Convert to file (BACKEND)</h1>
+        <label>Enter base 64 data</label>
+        <textarea id="textInput2" style="width: 80%; padding: 20px;" name="base64"></textarea>
+        <button onclick="handleSubmit(document.getElementById('textInput2').value)">Convert file</button>
+        <img src="" id="imgView2" />
+
+    </div>
+</body>
+<script>
+    const handleSubmit = (base64) => {
+        fetch('/base64toimg', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({base64}),
+        })
+        .then(response=>response.blob())
+        .then(result=> document.getElementById('imgView2').src = globalThis.URL.createObjectURL(result))
+    }
+</script>
+
+</html>
